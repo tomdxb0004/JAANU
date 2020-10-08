@@ -29,8 +29,8 @@ nse= Nse()
 
 
 stock_parameters = ['dayHigh','dayLow','open','lastPrice','pChange']
-for stock in stock_dict.keys():
-    print(stock)
+for i,stock in enumerate(stock_dict.keys(),1):
+    print(i,stock)
     
     stock_details = nse.get_quote(stock, as_json=True)
     stocks_dict.setdefault(stock,[])
@@ -133,4 +133,4 @@ message = today
 send_dataframe(message)
 e = time.time()
 time_taken = str(round((e-s)/60,2)).split('.')
-print('Executed in : {0} minutes {1} seconds'.format(time_taken[0],round(int(time_taken[1])*60/100),1))
+print('Executed in : {0} minute(s) {1} seconds'.format(time_taken[0],round(int(time_taken[1])*60/100),1))
