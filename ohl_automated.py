@@ -1,18 +1,17 @@
 import time
 start_time = time.time()
 import pickle
-from collections import defaultdict
 from nsetools import Nse
 import json
 import os
 import pandas as pd
 import numpy as np
 import re
-from sklearn.preprocessing import LabelEncoder
-from emailer_stock import SendEmail
 import warnings
 from pytz import timezone 
 from datetime import datetime
+from table_to_html import send_dataframe
+
 warnings.filterwarnings("ignore")
 
 os.chdir("C:\\Users\\tomdx\\Documents\\GitHub\\stock")
@@ -22,7 +21,7 @@ ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M:%S.%f
 with open('all_stocks.pickle', 'rb') as handle:
     stock_dict = pickle.load(handle)
 del stock_dict['NIFTY 50']    
-#with open('nifty50.pickle', 'rb') as handle:
+# with open('nifty50.pickle', 'rb') as handle:
     #stock_dict = pickle.dump(handle)
 
 stocks_dict = {}
@@ -58,19 +57,12 @@ def cap_split_allocate(capital,ltp,no_of_best_candidates):
 
 # from best candidates pick stock to enter
 def pick_stock(no_of_best_candidates,dataframe):
-    today = []
-    
-    if no_of_best_candidates>1:
-        symbol = le.inverse_transform(dataframe['SYM']) 
-        quantity = dataframe['quantity']
-        action = dataframe['action']
-        price = dataframe['LTP']
-        today.append([symbol,action,price])
+      
+    if no_of_best_candidates>0:
+        print(dataframe)
+        todays_pick = dataframe
         
-                
-        print('Symbol: ',symbol,'\n Quantity :',quantity,'\n Price :',price)
-        
-        return today
+        return todays_pick
 df.columns = [re.sub(r'\n','',x.lower()) for x in df.columns]
 df.columns = [re.sub(r'\s$','',c) for c in df.columns]
 
@@ -86,18 +78,10 @@ if 'ltp' in df.columns:
     print('Renaming ltp to last traded price')
     df.rename(columns = {'ltp':'last traded price'},inplace=True)
 
-#remove encoding on deployment
-# check time and timezones 
-le = LabelEncoder()
+
 dfx = df.copy()
 
-dfx['SYM'] = le.fit_transform(dfx['symbol'])
-dfx.drop(columns=['symbol'],inplace=True)
 
-#for column in  dfx.select_dtypes(include='object').columns:
-    #print(column)
-    
-    #dfx[column] = dfx[column].apply(lambda x: x.replace(',',''))
 dfx['%change'] = dfx['%change'].astype(float)
 
 
@@ -128,6 +112,7 @@ if trend <0:
     if ns != 0:
        
         today = pick_stock(ns,best_s_candidates)
+
     else:
         print('NO good pick as per OHL strategy')
         today = ['No good pick today']
@@ -148,13 +133,14 @@ else:
    
     print('# of buy candidates: ',nb )
     
+    
     if nb != 0:
-       
+              
         today = pick_stock(nb,best_b_candidates)
+
     else:
         print('NO good pick as per OHL strategy')
-        today = ['No good pick today']
-message = str(today) + str(ind_time)
-m = SendEmail(message,'cool')
-m.send_email()
-print("--- %.2f seconds ---" % (time.time() - start_time))
+        today = 'No good pick today'
+
+message = today
+send_dataframe(message)
