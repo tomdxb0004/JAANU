@@ -38,13 +38,13 @@ for stock in stock_dict.keys():
 
     for i,parameter in enumerate(stock_parameters):
 
-        print(parameter,'******',json.loads(stock_details)[parameter])
+        #print(parameter,'******',json.loads(stock_details)[parameter])
                
         stocks_dict[stock].append(json.loads(stock_details)[parameter])
 df = pd.DataFrame.from_dict(stocks_dict,orient='index',columns=['HIGH','LOW','OPEN','LAST TRADED PRICE','%change'])
 df.reset_index(inplace=True)
 df.rename(columns={'index':'symbol'},inplace=True)
-print(df.head())
+
 
 nifty50 = nse.get_index_quote("nifty 50")
 trend = float(nifty50['pChange'])
@@ -64,20 +64,7 @@ def pick_stock(no_of_best_candidates,dataframe):
         
         return todays_pick
 df.columns = [re.sub(r'\n','',x.lower()) for x in df.columns]
-df.columns = [re.sub(r'\s$','',c) for c in df.columns]
-
-if 'chng' in df.columns:
-    print('Renaming chng to change')
-    df.rename(columns = {'chng':'change'},inplace=True)
- 
-if '%chng' in df.columns:
-    print('Renaming %chng to %change')
-    df.rename(columns = {'%chng':'%change'},inplace=True)
-    
-if 'ltp' in df.columns:
-    print('Renaming ltp to last traded price')
-    df.rename(columns = {'ltp':'last traded price'},inplace=True)
-
+#df.columns = [re.sub(r'\s$','',c) for c in df.columns]
 
 dfx = df.copy()
 
