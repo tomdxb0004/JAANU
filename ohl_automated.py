@@ -1,5 +1,5 @@
 import time
-start_time = time.time()
+s = time.time()
 import pickle
 from nsetools import Nse
 import json
@@ -144,3 +144,6 @@ else:
 
 message = today
 send_dataframe(message)
+e = time.time()
+time_taken = str(round((e-s)/60,2)).split('.')
+print('Executed in : {0} minutes {1} seconds'.format(time_taken[0],round(int(time_taken[1])*60/100),1))
