@@ -9,6 +9,6 @@ def pick_stock(no_of_best_candidates,dataframe):
       
     if no_of_best_candidates>0:
         print(dataframe)
-        todays_pick = dataframe
+        todays_pick = dataframe.sort_values(by="%change")
         
         return todays_pick
