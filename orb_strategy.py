@@ -60,8 +60,8 @@ dfx['%change'] = dfx['%change'].astype(float)
 
 
 #ohl candidates
-dfx.loc[(dfx['open']==dfx['low']),'action'] = 'B'
-dfx.loc[(dfx['open']==dfx['high']),'action'] = 'S'
+dfx.loc[(dfx['open'] < dfx['low']),'action'] = 'B'
+dfx.loc[(dfx['open'] > dfx['high']),'action'] = 'S'
 ohl_cand = dfx.dropna(how='any')
 ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
 
@@ -88,7 +88,7 @@ if trend <0:
         today = pick_stock(ns,best_s_candidates)
 
     else:
-        print('NO good pick as per OHL strategy')
+        print('NO good pick as per ORB strategy')
         today = ['No good pick today']
     
     
@@ -113,11 +113,15 @@ else:
         today = pick_stock(nb,best_b_candidates)
 
     else:
-        print('NO good pick as per OHL strategy')
+        print('NO good pick as per ORB strategy')
         today = 'No good pick today'
 
 message = today
-send_dataframe(message,'blue_light')
+try:
+    send_dataframe(message,'orange_light')
+except:
+    message = pd.DataFrame(data = ['No good pick as per ORB strategy'])
+    send_dataframe(message,'orange_light')
 e = time.time()
 time_taken = str(round((e-s)/60,2)).split('.')
 print('Executed in : {0} minute(s) {1} seconds'.format(time_taken[0],round(int(time_taken[1])*60/100),1))
