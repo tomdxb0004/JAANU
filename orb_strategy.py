@@ -60,10 +60,12 @@ dfx['%change'] = dfx['%change'].astype(float)
 
 
 #ohl candidates
-dfx.loc[(dfx['open'] < dfx['low']),'action'] = 'B'
-dfx.loc[(dfx['open'] > dfx['high']),'action'] = 'S'
+dfx.loc[(dfx['open'] < dfx['high']),'action'] = 'B'
+dfx.loc[(dfx['open'] > dfx['low']),'action'] = 'S'
 ohl_cand = dfx.dropna(how='any')
 ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
+
+print(ohl_cand)
 
 capital = 400000
 ideal_profit = 2
