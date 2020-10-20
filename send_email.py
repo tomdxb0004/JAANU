@@ -9,7 +9,7 @@ def send_mail(body):
     message = MIMEMultipart()
     message['Subject'] = 'JAAnU Reccomends'
     message['From'] = 'tomdxb0004@gmail.com'
-    message['To'] = "tomdxb0004@gmail.com,jxt2904@gmail.com,jobins.j@rediffmail.com,brucewayne2204@gmail.com"
+    message['To'] = "tomdxb0004@gmail.com,jxt2904@gmail.com,jobins.j@rediffmail.com,brucewayne2204@gmail.com,arunjosephilip@yahoo.com"
 
     body_content = body
     message.attach(MIMEText(body_content, "html"))

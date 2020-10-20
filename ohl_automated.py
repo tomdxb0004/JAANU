@@ -59,12 +59,6 @@ dfx = df.copy()
 dfx['%change'] = dfx['%change'].astype(float)
 
 
-#ohl candidates
-dfx.loc[(dfx['open']==dfx['low']),'action'] = 'B'
-dfx.loc[(dfx['open']==dfx['high']),'action'] = 'S'
-ohl_cand = dfx.dropna(how='any')
-ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
-
 capital = 400000
 ideal_profit = 2
 stop_loss = 0.5
@@ -73,6 +67,9 @@ if trend <0:
     print('Pre-market downtrend')
     
 # for S
+    dfx.loc[(dfx['open']==dfx['high']),'action'] = 'S'
+    ohl_cand = dfx.dropna(how='any')
+    ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
     best_s_candidates = ohl_cand[ohl_cand['action']=='S']
     best_s_candidates = ohl_cand[ohl_cand['%change'] == ohl_cand['%change'].max()]
     ns = len(best_s_candidates)
@@ -89,13 +86,18 @@ if trend <0:
 
     else:
         print('NO good pick as per OHL strategy')
-        today = ['No good pick today']
+        today = pd.DataFrame(['No good pick to short --- OHL strategy'])
+
     
     
 else:
     print('Pre-market Uptrend')
 
 # for B
+    dfx.loc[(dfx['open']==dfx['low']),'action'] = 'B'
+    ohl_cand = dfx.dropna(how='any')
+    ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
+
     best_b_candidates = ohl_cand[ohl_cand['%change'] == ohl_cand['%change'].min()]
     best_b_candidates = ohl_cand[ohl_cand['action']=='B']
     nb = len(best_b_candidates)
@@ -114,7 +116,7 @@ else:
 
     else:
         print('NO good pick as per OHL strategy')
-        today = 'No good pick today'
+        today = pd.DataFrame(['No good pick to buy --- OHL strategy'])
 
 message = today
 send_dataframe(message,'blue_light')
