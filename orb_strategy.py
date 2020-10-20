@@ -58,15 +58,6 @@ dfx = df.copy()
 
 dfx['%change'] = dfx['%change'].astype(float)
 
-
-#ohl candidates
-dfx.loc[(dfx['open'] < dfx['high']),'action'] = 'B'
-dfx.loc[(dfx['open'] > dfx['low']),'action'] = 'S'
-ohl_cand = dfx.dropna(how='any')
-ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
-
-print(ohl_cand)
-
 capital = 400000
 ideal_profit = 2
 stop_loss = 0.5
@@ -75,6 +66,10 @@ if trend <0:
     print('Pre-market downtrend')
     
 # for S
+    dfx.loc[(dfx['open'] > dfx['low']),'action'] = 'S'
+    ohl_cand = dfx.dropna(how='any')
+    ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
+
     best_s_candidates = ohl_cand[ohl_cand['action']=='S']
     best_s_candidates = ohl_cand[ohl_cand['%change'] == ohl_cand['%change'].max()]
     ns = len(best_s_candidates)
@@ -98,6 +93,11 @@ else:
     print('Pre-market Uptrend')
 
 # for B
+    dfx.loc[(dfx['open'] < dfx['high']),'action'] = 'B'
+    ohl_cand = dfx.dropna(how='any')
+    ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
+
+
     best_b_candidates = ohl_cand[ohl_cand['%change'] == ohl_cand['%change'].min()]
     best_b_candidates = ohl_cand[ohl_cand['action']=='B']
     nb = len(best_b_candidates)
