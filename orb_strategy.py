@@ -66,9 +66,11 @@ if trend <0:
     print('Pre-market downtrend')
     
 # for S
-    dfx.loc[(dfx['open'] > dfx['low']),'action'] = 'S'
+    dfx.loc[(dfx['open'] > dfx['last traded price']),'action'] = 'S'
     ohl_cand = dfx.dropna(how='any')
     ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
+
+    
 
     best_s_candidates = ohl_cand[ohl_cand['action']=='S']
     best_s_candidates = ohl_cand[ohl_cand['%change'] == ohl_cand['%change'].max()]
@@ -93,7 +95,7 @@ else:
     print('Pre-market Uptrend')
 
 # for B
-    dfx.loc[(dfx['open'] < dfx['high']),'action'] = 'B'
+    dfx.loc[(dfx['open'] < dfx['last traded price']),'action'] = 'B'
     ohl_cand = dfx.dropna(how='any')
     ohl_cand.rename(columns={'last traded price':'LTP'},inplace=True)
 
