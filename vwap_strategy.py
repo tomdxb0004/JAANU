@@ -8,10 +8,16 @@ import time
 import glob
 import warnings
 from table_to_html import send_dataframe
+import shutil
 warnings.filterwarnings("ignore")
-
-
 os.chdir("C:\\Users\\tomdx\\Documents\\GitHub\\stock")
+
+# Gather directory contents
+target_dir = "C:\\Users\\tomdx\\Documents\\GitHub\\stock\\vwap_data\\"
+contents = [os.path.join(target_dir, i) for i in os.listdir(target_dir)]
+
+# Iterate and remove each item in the appropriate manner
+[os.remove(i) if os.path.isfile(i) or os.path.islink(i) else shutil.rmtree(i) for i in contents]
 
 with open('nifty_100.pickle', 'rb') as handle:
     stock_dict = pickle.load(handle)
