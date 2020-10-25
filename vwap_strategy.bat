@@ -1,0 +1,2 @@
+python vwap_strategy.py
+pause

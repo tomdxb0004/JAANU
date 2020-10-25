@@ -19,11 +19,9 @@ os.chdir("C:\\Users\\tomdx\\Documents\\GitHub\\stock")
 ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M:%S.%f')
 
 
-with open('all_stocks.pickle', 'rb') as handle:
+with open('nifty_100.pickle', 'rb') as handle:
     stock_dict = pickle.load(handle)
-del stock_dict['NIFTY 50']    
-# with open('nifty50.pickle', 'rb') as handle:
-    #stock_dict = pickle.dump(handle)
+ 
 
 stocks_dict = {}
 nse= Nse()

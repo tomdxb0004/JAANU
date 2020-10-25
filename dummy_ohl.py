@@ -1,6 +1,7 @@
 import time
 s = time.time()
 import pickle
+from numba import njit
 from nsetools import Nse
 import json
 import os
@@ -28,30 +29,34 @@ nse= Nse()
 
 
 stock_parameters = ['dayHigh','dayLow','open','lastPrice','pChange']
-for i,stock in enumerate(stock_dict.keys(),1):
-    print(i,stock)
-    
-    stock_details = nse.get_quote(stock, as_json=True)
-    stocks_dict.setdefault(stock,[])
+@njit
+def get_stock_data(nse=nse,stock_parameters=stock_parameters,stock_dict=stock_dict):
+
+    for i,stock in enumerate(stock_dict.keys(),1):
+        print(i,stock)
+        
+        stock_details = nse.get_quote(stock, as_json=True)
+        stocks_dict.setdefault(stock,[])
 
 
-    for i,parameter in enumerate(stock_parameters):
+        for i,parameter in enumerate(stock_parameters):
 
-        #print(parameter,'******',json.loads(stock_details)[parameter])
-               
-        stocks_dict[stock].append(json.loads(stock_details)[parameter])
-df = pd.DataFrame.from_dict(stocks_dict,orient='index',columns=['HIGH','LOW','OPEN','LAST TRADED PRICE','%change'])
-df.reset_index(inplace=True)
-df.rename(columns={'index':'symbol'},inplace=True)
+            #print(parameter,'******',json.loads(stock_details)[parameter])
+                
+            stocks_dict[stock].append(json.loads(stock_details)[parameter])
+    df = pd.DataFrame.from_dict(stocks_dict,orient='index',columns=['HIGH','LOW','OPEN','LAST TRADED PRICE','%change'])
+    df.reset_index(inplace=True)
+    df.rename(columns={'index':'symbol'},inplace=True)
 
 
-nifty50 = nse.get_index_quote("nifty 50")
+
+
+    df.columns = [re.sub(r'\n','',x.lower()) for x in df.columns]
+    return df
+
+dfx =  get_stock_data()
+nifty50 = nse.get_index_quote("nifty 100")
 trend = float(nifty50['pChange'])
-
-df.columns = [re.sub(r'\n','',x.lower()) for x in df.columns]
-#df.columns = [re.sub(r'\s$','',c) for c in df.columns]
-
-dfx = df.copy()
 
 
 dfx['%change'] = dfx['%change'].astype(float)
@@ -117,13 +122,7 @@ else:
         today = pd.DataFrame(['No good pick to buy --- OHL strategy'])
 
 message = today
-send_dataframe(message,'blue_light')
+#send_dataframe(message,'blue_light')
 e = time.time()
 time_taken = str(round((e-s)/60,2)).split('.')
 print('Executed in : {0} minute(s) {1} seconds'.format(time_taken[0],round(int(time_taken[1])*60/100),1))
-date = time.ctime().split(' ')[2] + '-' + time.ctime().split(' ')[1]
-data_file_name = str(date) + '-ohl.csv'
-ohl_picked = str(date) + '-ohl_picked.csv'
-path = "C:\\Users\\tomdx\\Documents\\GitHub\\stock\\daily_data\\"
-df.to_csv(str(path) + str(data_file_name),index=False)
-message.to_csv(str(path) + str(ohl_picked),index=False)

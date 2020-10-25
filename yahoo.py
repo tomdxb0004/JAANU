@@ -8,9 +8,8 @@ print(os.getcwd())
 path = "C:\\Users\\tomdx\\Documents\\GitHub\\stock\\data_from_july_1_2020\\"
 todays_date = str(dt.today()).split(' ')[0]
 
-with open('all_stocks.pickle', 'rb') as handle:
+with open('nifty_100.pickle', 'rb') as handle:
     stock_dict = pickle.load(handle)
-del stock_dict['NIFTY 50']    
 
 for i,stock in enumerate(stock_dict.keys(),1):
     print(i,stock)
