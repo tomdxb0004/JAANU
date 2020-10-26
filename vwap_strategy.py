@@ -51,7 +51,7 @@ def get_nse100_data(stock_dict=stock_dict):
 
 for i in range(9):
     get_nse100_data()
-    time.sleep(180)
+    time.sleep(240)
 
 appended_df = pd.DataFrame()
 path = r'./vwap_data/' 
