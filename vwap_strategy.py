@@ -10,6 +10,9 @@ import warnings
 from table_to_html import send_dataframe
 import shutil
 warnings.filterwarnings("ignore")
+import time
+time_list = time.ctime().split(' ')
+date = time_list[1] + '-' + time_list[2] +'-' + time_list[4]
 os.chdir("C:\\Users\\tomdx\\Documents\\GitHub\\stock")
 
 # Gather directory contents
@@ -48,7 +51,7 @@ def get_nse100_data(stock_dict=stock_dict):
 
 for i in range(9):
     get_nse100_data()
-    time.sleep(300)
+    time.sleep(180)
 
 appended_df = pd.DataFrame()
 path = r'./vwap_data/' 
@@ -64,8 +67,8 @@ def vwap(infy):
     infy['pv_cum_sum'] = infy['price_volume'].cumsum()
     infy['cum_v'] = infy['TOTAL TRADED VOLUME'].cumsum()
     infy['vwap'] = infy['pv_cum_sum']/infy['cum_v']
-    infy.loc[infy['vwap']>infy['LAST TRADED PRICE'],'Action'] = 'Short'
-    infy.loc[infy['vwap']<infy['LAST TRADED PRICE'],'Action'] = 'Long'
+    infy.loc[infy['vwap']>infy['LAST TRADED PRICE'],'Action'] = 'Long'
+    infy.loc[infy['vwap']<infy['LAST TRADED PRICE'],'Action'] = 'Short'
     infy.loc[infy['vwap']==infy['LAST TRADED PRICE'],'Action'] = 'No VWAP'
     return infy
 
@@ -85,4 +88,7 @@ if trend>0:
 else:
     sell_candidates = final_df[final_df['Action']=='Short']
     send_dataframe(sell_candidates,'red_light')
-    
+
+path = "C:\\Users\\tomdx\\Documents\\GitHub\\stock\\daily_closing_data\\"
+file_name = path + date + 'vwap_df.csv'
+final_df.to_csv(file_name)
