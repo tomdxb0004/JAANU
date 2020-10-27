@@ -80,7 +80,7 @@ def vwap(infy):
     infy.loc[infy['vwap']==infy['LAST TRADED PRICE'],'Action'] = 'No VWAP'
     infy['vwap_diff_as_percent_of_LTP'] = round(((infy['vwap'] - infy['LAST TRADED PRICE'])/infy['LAST TRADED PRICE'])*100,2)
     infy.sort_values('vwap_diff_as_percent_of_LTP',ascending=False,inplace=True)
-    infy.drop(columns=['avg','price_volume','pv_cum_sum','cum_v'],inplace=True)
+    infy.drop(columns=['avg','price_volume','pv_cum_sum','cum_v','TOTAL TRADED VOLUME'],inplace=True)
     return infy
 
 final_df = pd.DataFrame()
